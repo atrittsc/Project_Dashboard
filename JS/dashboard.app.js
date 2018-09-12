@@ -66,6 +66,9 @@ var dashboardApp = new Vue({
         console.log('FETCH ERROR: ');
         console.log(err);
       })
+    },
+    gotoTask(tid) {
+      window.location = 'task.html?taskID='+ tid;
     }
   },
   created: function() {
