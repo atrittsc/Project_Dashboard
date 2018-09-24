@@ -10,7 +10,7 @@ if ($taskId < 1) {
 }
 
 
-// 1. go to the databse and get all word associated with the $taskId
+// 1. go to the databse and get all work associated with the $taskId
 $workArr = Work::getAllWorkByTask($taskId);
 
 // 2. convert to Json
