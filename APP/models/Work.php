@@ -31,12 +31,14 @@ class Work
 
     $this->completion_estimate = intval($row['completion_estimate']);
   }
+
   public static function getWorkByTaskId(int $taskId) {
     // 1. Connect to the database
     $db = new PDO(DB_SERVER, DB_USER, DB_PW);
 
     // 2. Prepare the query
     $sql = 'SELECT * FROM Work WHERE task_id = ?';
+
     $statement = $db->prepare($sql);
 
     // 3. Run the query
