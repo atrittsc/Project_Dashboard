@@ -2,6 +2,12 @@
 
 require '../../app/common.php';
 
+if ($_server['REQUEST_METHOD'] == 'POST') {
+  require 'workPost.php';
+  exit;
+}
+
+// IF GET
 $taskId = intval($_GET['taskId'] ?? 0);
 
 if ($taskId < 1) {
