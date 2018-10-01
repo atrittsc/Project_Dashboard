@@ -75,6 +75,8 @@ var tasksApp = new Vue({
     // Populate workForm with default values
     this.workForm = this.getEmptyWorkForm();
 
+    console.log('TAG');
+
     // Do data fetch
     const url = new URL(window.location.href);
     const taskId = url.searchParams.get('taskId');
