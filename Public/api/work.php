@@ -2,7 +2,7 @@
 
 require '../../app/common.php';
 
-if ($_server['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   require 'workPost.php';
   exit;
 }
