@@ -12,5 +12,4 @@ require 'environment.php';
 // TODO: Require object files
 require 'models/Work.php';
 require 'models/Team.php';
-require 'models/WorkHoursReport.php';
 // change the working directory to this file //
