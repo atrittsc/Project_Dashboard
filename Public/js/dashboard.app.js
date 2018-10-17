@@ -55,16 +55,17 @@ var dashboardApp = new Vue({
         return 'alert-warning'
       }
     },
-    fetchTasks () {
+    fetchTasks (pid) {
       fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/p1-tasks.json')
       .then( response => response.json() )
+      // ^ This is the same as .then( function(response) {return response.json()} )
       .then( json => {dashboardApp.tasks = json} )
       .catch( err => {
         console.log('TASK FETCH ERROR:');
         console.log(err);
       })
     },
-    fetchProject () {
+    fetchProject (pid) {
       fetch('https://raw.githubusercontent.com/tag/iu-msis/dev/app/data/project1.json')
       .then( response => response.json() )
       .then( json => {dashboardApp.project = json} )
@@ -74,39 +75,92 @@ var dashboardApp = new Vue({
       })
     },
     fetchProjectWork (pid) {
-      fetch('api/workHours.php?projectId='+pid)
+      fetch('api/workHours.php?projectId=' + pid)
       .then( response => response.json() )
       .then( json => {
         dashboardApp.workHours = json;
-        this.formatWorkData();
-        //TODO: this buildEffortChart();
-
-      } )
+        this.formatWorkHours();
+        this.buildEffortChart();
+      })
       .catch( err => {
-        console.log('PROJECT FETCH ERROR:');
+        console.log('PROJECT HOURS FETCH ERROR:');
         console.log(err);
       })
     },
-    formatWorkData() {
+    formatWorkHours() {
       this.workHours.forEach(
         function(entry, index, arr) {
           entry.date = Date.parse(entry.date);
           entry.hours = Number(entry.hours);
-          entry.runningTotalHours = entry.hours
-          + (index == 0 ? 0 : arr[index-1].runningTotalHours)
+
+          entry.runningTotalHours = entry.hours +
+            (index == 0 ? 0 : arr[index-1].runningTotalHours);
         }
       );
       console.log(this.workHours);
     },
-    
+    buildEffortChart() {
+      Highcharts.chart('effortChart', {
+            chart: {
+                zoomType: 'x'
+            },
+            title: {
+                text: 'Cumulative Effort'
+            },
+            xAxis: {
+                type: 'datetime'
+            },
+            yAxis: {
+                title: {
+                    text: 'Hours'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.Color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    marker: {
+                        radius: 2
+                    },
+                    lineWidth: 1,
+                    states: {
+                        hover: {
+                            lineWidth: 1
+                        }
+                    },
+                    threshold: null
+                }
+            },
+            series: [{
+                type: 'area',
+                name: 'Effort (hrs)',
+                data:  this.workHours.map( entry =>
+                  [entry.date, entry.runningTotalHours]
+                ) //Expects [ [date1, val1], [date2, val2], [] ]
+            }]
+        });
+    },
     gotoTask(tid) {
-      // alert ('Clicked: ' + tid)
       window.location = 'task.html?taskId=' + tid;
     }
   },
   created () {
-    this.fetchProject();
-    this.fetchProjectWork();
-    this.fetchTasks();
+    // TODO: GET param projectId
+    this.fetchProject(1);
+    this.fetchTasks(1);
+    this.fetchProjectWork(1);
   }
 })

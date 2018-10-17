@@ -6,7 +6,7 @@ class WorkHoursReport
     $db = new PDO(DB_SERVER, DB_USER, DB_PW);
 
     $sql = 'SELECT DATE(start_date) AS date,
-              sum(hours) AS hours
+              SUM(hours) AS hours
               FROM Work, tasks
               WHERE Work.task_id = Tasks.id
                 AND Tasks.project_id = ?
